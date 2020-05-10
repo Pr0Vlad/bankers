@@ -1,0 +1,177 @@
+package com.company;
+
+import java.io.*;
+
+class OSPR2 {
+    static int bankkey[] = new int[50];
+    static int bankenotfoundkey[] = new int[50];
+
+    static boolean algo(int avail[], int alloc1[][], int need[][], int a, int b) {
+        int n = a;
+        int m = b;
+        int nd[][] = new int[n][m];
+        int ww[] = new int[m];
+        int alloc[][] = new int[n][m];
+
+        for (int i = 0; i < m; i++) {
+            ww[i] = avail[i];
+        }
+
+        System.out.println(" Available Array \n");
+        for( int i = 0; i < ww.length; i++ ) {
+            System.out.print(ww[i] + " " );
+        }
+        System.out.println("");
+
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                alloc[i][j] = alloc1[i][j];
+            }
+        }
+
+
+        System.out.println(" Allocated Array \n");
+        for( int i = 0; i < alloc.length; i++ ) {
+            for( int j = 0; j < alloc[i].length; j++ ) {
+                System.out.print( alloc[i][j] + " " );
+            }
+            System.out.println();
+        }
+
+
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                nd[i][j] = need[i][j];
+            }
+        }
+
+
+        System.out.println(" Need Array \n");
+        for( int i = 0; i < nd.length; i++ ) {
+            for( int j = 0; j < nd[i].length; j++ ) {
+                System.out.print( nd[i][j] + " " );
+            }
+            System.out.println();
+        }
+
+
+        boolean done[] = new boolean[n];
+
+
+        for (int i = 0; i < n; i++) {
+            done[i] = false;
+        }
+
+
+        int ch = 0;
+        int ch1 = 0;
+
+        do {
+            for (int i = 0; i < n; i++) {
+                boolean flag = true;
+                if ( done[i] == false ) {
+                    for (int j = 0; j < m; j++) {
+                        if (ww[j] < nd[i][j]) {
+                            flag = false;
+                        }
+                    }
+
+
+                    if ( flag ) {
+                        for (int j = 0; j < m; j++) {
+                            ww[j] += alloc[i][j];
+                        }
+                        bankkey[ch] = i;
+                        ch++;
+                        done[i] = true;
+                    } else {
+                        bankenotfoundkey[ch] = i;
+                    }
+                }
+            }
+
+            ch1++;
+        } while ( ch < n && ch1 < n);
+
+        if (ch > n) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public static void main(String args[]) throws IOException {
+        InputStreamReader letsdothis = new InputStreamReader(System.in);
+        BufferedReader objectforme = new BufferedReader(letsdothis);
+
+        int n, m;
+        System.out.println("enter # of processes: ");
+        n = Integer.parseInt(objectforme.readLine());
+        System.out.println("enter # of resources: ");
+        m = Integer.parseInt(objectforme.readLine());
+
+        int availa[] = new int[m];
+        for (int i = 0; i < m; i++) {
+            System.out.println("enter # available instances resources: " + i);
+
+            availa[i] = Integer.parseInt(objectforme.readLine());
+        }
+
+        System.out.println("enter allocation resources: ");
+
+        int alloca[][] = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+
+                System.out.println("enter allocation instances of resources: " + j + " for process p" + i);
+
+                alloca[i][j] = Integer.parseInt(objectforme.readLine());
+            }
+        }
+
+        System.out.println("enter max resources: ");
+        int max[][] = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+                System.out.println("enter max instances resources:" + j + "for process p" + i);
+
+
+                max[i][j] = Integer.parseInt(objectforme.readLine());
+            }
+        }
+
+        System.out.println(" max Array \n");
+        for( int i = 0; i < max.length; i++ ) {
+            for( int j = 0; j < max[i].length; j++ ) {
+                System.out.print( max[i][j] + " " );
+            }
+            System.out.println();
+        }
+
+
+        int need[][] = new int[n][m];
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) {
+
+                need[i][j] = max[i][j] - alloca[i][j];
+            }
+        }
+
+        if ( algo( availa, alloca, need, n, m )) {
+            System.out.println("Safe State");
+            System.out.print("Safe sequence:");
+            for (int i = 0; i < n; i++) {
+                System.out.print( "P" + bankkey[i] + " " );
+            }
+        } else {
+            System.out.println("UnSafe State");
+            System.out.print("Safe sequence:");
+            for (int i = 0; i < n; i++) {
+                System.out.print( "P" + bankenotfoundkey[i] + " " );
+            }
+        }
+
+
+    }
+}
